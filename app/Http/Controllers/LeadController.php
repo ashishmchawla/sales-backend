@@ -10,6 +10,7 @@ class LeadController extends Controller
 {
     
     public function createLead(Request $request) {
+        
         $data = [
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,
