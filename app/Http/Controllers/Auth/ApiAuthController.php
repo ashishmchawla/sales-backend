@@ -99,4 +99,12 @@ class ApiAuthController extends Controller
 
     }
 
+    public function getUsers() {
+
+        $users = User::all();
+        return response([
+            'users' => $users
+        ]);
+    
+    }
 }
