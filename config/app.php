@@ -123,6 +123,8 @@ return [
 
     'cipher' => 'AES-256-CBC',
 
+    'fcm_token' => env('FCM_TOKEN', ''),
+
     /*
     |--------------------------------------------------------------------------
     | Autoloaded Service Providers

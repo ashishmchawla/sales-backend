@@ -27,8 +27,8 @@ Route::group(['middleware' => 'auth:api'], function () {
 
     // Reset Password
     Route::post('/forgotPassword', 'Auth\ApiAuthController@forgotPassword');
-    
-    // Lead Routes 
+
+    // Lead Routes
     Route::post('/leads/createLead', 'LeadController@createLead');
     Route::post('/leads/editLead', 'LeadController@editLead');
     Route::post('/leads/search', 'LeadController@searchLeadByName');
@@ -40,5 +40,8 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::put('/lead_activity/edit/{activity_id}', 'LeadActivityController@editActivity');
     Route::delete('/lead_activity/{activity_id}', 'LeadActivityController@deleteActivity');
 
+	//Register Token
+	Route::post('/registerUserDevice', 'PushNotificationController@registerUserDevice');
+	Route::post('/sendNotification', 'PushNotificationController@sendPushNotification');
 
 });
