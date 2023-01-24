@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Lead;
+use App\Models\LeadActivity;
+use App\Models\User;
 use Auth;
 
 class LeadController extends Controller
 {
-    
+
     public function createLead(Request $request) {
         $data = [
             'first_name' => $request->first_name,
@@ -23,7 +25,21 @@ class LeadController extends Controller
 
         $lead = Lead::create($data);
 
+        if( $lead ) {
+            $leadOwner = User::find($request->lead_owner);
+            $activityData = [
+                'lead_id' => $lead->lead_id,
+                'activity_log' => 'New lead added by '.$leadOwner->first_name.' '.$leadOwner->last_name,
+                'activity_type' => 'note',
+                'remind_at' => null,
+                'is_event_complete' => 1,
+                'logged_by' => $request->lead_owner,
+            ];
+            $activity = LeadActivity::create($data);
+        }
+
         return response(['status' => 1, 'lead' => $lead, 'message' => 'Lead added successfully']);
+
 
     }
 
@@ -36,9 +52,9 @@ class LeadController extends Controller
         $lead->last_name = $request->last_name;
         $lead->contact = $request->contact;
         $lead->location = $request->location;
-        $lead->account_category = $request->account_category; 
-        $lead->account_code = $request->account_code; 
-        $lead->third_party = $request->third_party; 
+        $lead->account_category = $request->account_category;
+        $lead->account_code = $request->account_code;
+        $lead->third_party = $request->third_party;
         $lead->lead_status = $request->lead_status;
         if( $request->stock_margin != null ) {
             $lead->stock_margin = $request->stock_margin;
@@ -51,7 +67,7 @@ class LeadController extends Controller
         }
     }
 
-    public function searchLeadByName(Request $request) { 
+    public function searchLeadByName(Request $request) {
 
         $search = "%".$request->searchWord."%";
         $leads = Lead::where(function($q) use($search) {
@@ -62,8 +78,8 @@ class LeadController extends Controller
 
         if( $leads->count() > 0 ) {
             return response([
-                'status' => 1, 
-                'results' => $leads, 
+                'status' => 1,
+                'results' => $leads,
                 'message' => $leads->count().' leads found'
             ]);
         }
@@ -82,7 +98,7 @@ class LeadController extends Controller
         }
         else {
             return response(['status' => 0, 'error_message' => 'No leads found']);
-        }    
+        }
 
     }
 
@@ -92,7 +108,7 @@ class LeadController extends Controller
 
         if ($lead) {
             return response([
-                'status' => 1, 
+                'status' => 1,
                 'details' => $lead,
                 'message' => 'Lead details fetched'
             ]);
