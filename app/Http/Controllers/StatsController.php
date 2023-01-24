@@ -24,7 +24,12 @@ class StatsController extends Controller
             $q->whereYear('created_at', $year);
         })->get();
 
-        foreach( $users as $user ) {
+        $userTargets = UserTargets::where(function($q) use($month, $year) {
+            $q->whereMonth('created_at', $month);
+            $q->whereYear('created_at', $year);
+        })->get();
+
+        foreach( $userTargets as $userTarget ) {
 
         }
 
