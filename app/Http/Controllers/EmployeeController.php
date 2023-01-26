@@ -7,6 +7,7 @@ use App\Models\User;
 
 class EmployeeController extends Controller
 {
+    
     public function allUsers(){
         
         $users = User::all();
@@ -24,4 +25,25 @@ class EmployeeController extends Controller
         }
         return $result;
 	}
+
+    public function getUserDetails($user_id) {
+
+        $user = User::find($user_id);
+
+        if ($user) {
+            return response([
+                'status' => 1,
+                'details' => $user,
+                'message' => 'User details fetched'
+            ]);
+        }
+        else {
+            return response([
+                'status' => 0,
+                'error_message' => 'Something went wrong, try again'
+            ]);
+        }
+
+    }
+
 }

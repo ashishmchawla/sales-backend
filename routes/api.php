@@ -47,6 +47,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     // Dashboard APIs
     // Users
     Route::get('/allUsers', 'EmployeeController@allUsers');
+    Route::get('/user_details/{user_id}', 'EmployeeController@getUserDetails');
 
     // Leads
     Route::get('/allLeads', 'LeadController@allLeads');
