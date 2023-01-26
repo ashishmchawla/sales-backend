@@ -48,4 +48,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     // Users
     Route::get('/allUsers', 'EmployeeController@allUsers');
 
+    // Leads
+    Route::get('/allLeads', 'LeadController@allLeads');
+
 });
