@@ -16,7 +16,7 @@ class EmployeeController extends Controller
         
 			array_push($result['data'],[
 				$value->id,
-				$value->name,
+				$value->first_name. ' '.$value->last_name,
 				$value->email,
                 $value->phone,
                 strtoupper($value->user_type)

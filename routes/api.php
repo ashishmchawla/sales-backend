@@ -46,6 +46,6 @@ Route::group(['middleware' => 'auth:api'], function () {
 
     // Dashboard APIs
     // Users
-    Route::get('/allUsers', 'EmployyeeController@allUsers');
+    Route::get('/allUsers', 'EmployeeController@allUsers');
 
 });
