@@ -40,8 +40,12 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::put('/lead_activity/edit/{activity_id}', 'LeadActivityController@editActivity');
     Route::delete('/lead_activity/{activity_id}', 'LeadActivityController@deleteActivity');
 
-	//Register Token
+	// Register Token
 	Route::post('/registerUserDevice', 'PushNotificationController@registerUserDevice');
 	Route::post('/sendNotification', 'PushNotificationController@sendPushNotification');
+
+    // Dashboard APIs
+    // Users
+    Route::get('/allUsers', 'EmployyeeController@allUsers');
 
 });
