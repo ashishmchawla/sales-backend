@@ -124,24 +124,27 @@ class LeadController extends Controller
 
     public function allLeads(){
         
-        $leads = Lead::join('users', function($q){
-            $q->where('leads.lead_owner', '=', 'users.id');
-        })->get();
+        $leads = Lead::join('users', 'leads.lead_owner', '=', 'users.id')
+        ->selectRaw('leads.*, users.first_name as owner_first_name, users.last_name as owner_last_name')
+        ->orderBy('leads.created_at', 'desc')
+        ->get();
         
-        return $leads;
-        // $result['data']=[];
+        $result['data']=[];
 
-        // foreach ($users as $value) {
+        foreach ($leads as $value) {
         
-		// 	array_push($result['data'],[
-		// 		$value->id,
-		// 		$value->first_name. ' '.$value->last_name,
-		// 		$value->email,
-        //         $value->phone,
-        //         strtoupper($value->user_type)
-		// 	]);   
-        // }
-        // return $result;
+			array_push($result['data'],[
+				$value->id,
+				$value->first_name. ' '.$value->last_name,
+				$value->email,
+                $value->phone,
+                $value->location,
+                $value->owner_first_name.' '.$value->owner_last_name,
+                $value->lead_status,
+                date('d M Y h:i a', strtotime($value->created_at)) 
+			]);   
+        }
+        return $result;
 	}
 
 }
