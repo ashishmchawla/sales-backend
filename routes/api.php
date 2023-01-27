@@ -51,5 +51,7 @@ Route::group(['middleware' => 'auth:api'], function () {
 
     // Leads
     Route::get('/allLeads', 'LeadController@allLeads');
+    Route::post('/set_user_targets', 'StatsController@setUserTargets');
+    Route::get('/user_targets_table/{user_id}', 'StatsController@getUserTargetTable');
 
 });
