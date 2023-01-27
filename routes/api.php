@@ -48,10 +48,12 @@ Route::group(['middleware' => 'auth:api'], function () {
     // Users
     Route::get('/allUsers', 'EmployeeController@allUsers');
     Route::get('/user_details/{user_id}', 'EmployeeController@getUserDetails');
+    Route::post('/set_user_targets', 'StatsController@setUserTargets');
+    Route::get('/user_targets_table/{user_id}', 'StatsController@getUserTargetTable');
 
     // Leads
     Route::get('/allLeads', 'LeadController@allLeads');
-    Route::post('/set_user_targets', 'StatsController@setUserTargets');
-    Route::get('/user_targets_table/{user_id}', 'StatsController@getUserTargetTable');
+    Route::get('/lead_details/{lead_id}', 'LeadController@getLeadDetailsForAdmin');
+    Route::get('/lead_activities/{lead_id}', 'LeadController@getLeadActivities');
 
 });

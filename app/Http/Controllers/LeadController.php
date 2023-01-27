@@ -122,6 +122,30 @@ class LeadController extends Controller
 
     }
 
+    public function getLeadDetailsForAdmin($lead_id) {
+
+        $lead = Lead::where('leads.id', $lead_id)
+        ->join('users', 'leads.lead_owner', '=', 'users.id')
+        ->selectRaw('leads.*, users.first_name as owner_first_name, users.last_name as owner_last_name')
+        ->orderBy('leads.created_at', 'desc')
+        ->first();
+
+        if ($lead) {
+            return response([
+                'status' => 1,
+                'details' => $lead,
+                'message' => 'Lead details fetched'
+            ]);
+        }
+        else {
+            return response([
+                'status' => 0,
+                'error_message' => 'Something went wrong, try again'
+            ]);
+        }
+
+    }
+
     public function allLeads(){
         
         $leads = Lead::join('users', 'leads.lead_owner', '=', 'users.id')
@@ -146,5 +170,27 @@ class LeadController extends Controller
         }
         return $result;
 	}
+
+    public function getLeadActivities($lead_id) {
+
+        $leadActivities = LeadActivity::where('lead_id', $lead_id)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        if( $leadActivities ) {
+            return response([
+                'status' => 1,
+                'details' => $leadActivities,
+                'message' => 'Lead activities fetched'
+            ]);
+        }
+        else {
+            return response([
+                'status' => 0,
+                'error_message' => 'Something went wrong, try again'
+            ]);
+        }
+
+    }
 
 }
