@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Models\UserTargets;
 use App\Models\User;
 use App\Models\Lead;
@@ -14,23 +15,15 @@ class StatsController extends Controller
     public function storeStats($month, $year) {
 
         $users = User::where('user_target_type', 'user')->get();
-        $leads = Lead::where(function($q) use($month, $year) {
-            $q->whereMonth('created_at', $month);
-            $q->whereYear('created_at', $year);
-        })->get();
-
-        $leadActivities = LeadActivity::where(function($q) use($month, $year) {
-            $q->whereMonth('created_at', $month);
-            $q->whereYear('created_at', $year);
-        })->get();
-
-        $userTargets = UserTargets::where(function($q) use($month, $year) {
-            $q->whereMonth('created_at', $month);
-            $q->whereYear('created_at', $year);
-        })->get();
-
-        foreach( $userTargets as $userTarget ) {
-
+       
+        foreach($users as $user) {
+            self::saveNewCount($user, $month, $year);
+            self::saveExistingCount($user, $month, $year);
+            self::saveAccountCount($user, $month, $year);
+            self::saveMFCount($user, $month, $year);
+            self::saveInsuranceCount($user, $month, $year);
+            self::saveMarginCount($user, $month, $year);
+            self::saveThirdPartyCount($user, $month, $year);
         }
 
     }
@@ -187,5 +180,203 @@ class StatsController extends Controller
         return $result;
 
     }
+
+    public function saveNewCount($user, $month, $year) {
+
+        $leadAdded = Lead::where(function($q) use($month, $year, $user) {
+            $q->whereMonth('created_at', $month);
+            $q->whereYear('created_at', $year);
+            $q->where('lead_owner', $user->id);
+        })->get();
+
+        $newLeadsAdded = $leadAdded->count();
+
+        $baseData = [
+            'user_id' => $user_id,
+            'month' => $month,
+            'year' => $year,
+            'target_type' => 'new',
+        ];
+
+        $addNewData = UserTargets::updateOrInsert($baseData, [
+            'user_id' => $user_id,
+            'month' => $month,
+            'year' => $year,
+            'target_type' => 'new',
+            'count' => $newLeadsAdded
+        ]);
+
+    }
+
+    public function saveExistingCount($user, $month, $year) {
+
+        $leadAdded = Lead::where(function($q) use($month, $year, $user) {
+            $q->whereMonth('updated_at', $month);
+            $q->whereYear('updated_at', $year);
+            $q->where('lead_owner', $user->id);
+        })->get();
+
+        $existingLeads = $leadAdded->count();
+
+        $baseData = [
+            'user_id' => $user_id,
+            'month' => $month,
+            'year' => $year,
+            'target_type' => 'existing',
+        ];
+
+        $addExistingData = UserTargets::updateOrInsert($baseData, [
+            'user_id' => $user_id,
+            'month' => $month,
+            'year' => $year,
+            'target_type' => 'existing',
+            'count' => $existingLeads
+        ]);
+
+    }
+
+    public function saveAccountCount($user, $month, $year) {
+
+        $leadAdded = Lead::where(function($q) use($month, $year, $user) {
+            $q->whereMonth('created_at', $month);
+            $q->whereYear('created_at', $year);
+            $q->where('lead_owner', $user->id);
+            $q->whereNotNull('account_code');
+        })->get();
+
+        $newAccount = $leadAdded->count();
+
+        $baseData = [
+            'user_id' => $user_id,
+            'month' => $month,
+            'year' => $year,
+            'target_type' => 'account',
+        ];
+
+        $addNewData = UserTargets::updateOrInsert($baseData, [
+            'user_id' => $user_id,
+            'month' => $month,
+            'year' => $year,
+            'target_type' => 'account',
+            'count' => $newAccount
+        ]);
+
+    }
+    
+    public function saveMFCount($user, $month, $year) {
+
+        $leadAdded = Lead::where(function($q) use($month, $year, $user) {
+            $q->whereMonth('created_at', $month);
+            $q->whereYear('created_at', $year);
+            $q->where('lead_owner', $user->id);
+            $q->where('account_category', 'mutual_funds');
+            $q->whereNull('third_party');
+        })->get();
+
+        $newAccount = $leadAdded->count();
+
+        $baseData = [
+            'user_id' => $user_id,
+            'month' => $month,
+            'year' => $year,
+            'target_type' => 'mutual_funds',
+        ];
+
+        $addNewData = UserTargets::updateOrInsert($baseData, [
+            'user_id' => $user_id,
+            'month' => $month,
+            'year' => $year,
+            'target_type' => 'mutual_funds',
+            'count' => $newAccount
+        ]);
+        
+    }
+
+    public function saveInsuranceCount($user, $month, $year) {
+
+        $leadAdded = Lead::where(function($q) use($month, $year, $user) {
+            $q->whereMonth('created_at', $month);
+            $q->whereYear('created_at', $year);
+            $q->where('lead_owner', $user->id);
+            $q->where('account_category', 'insurance');
+            $q->whereNull('third_party');
+        })->get();
+
+        $newAccount = $leadAdded->count();
+
+        $baseData = [
+            'user_id' => $user_id,
+            'month' => $month,
+            'year' => $year,
+            'target_type' => 'insurance',
+        ];
+
+        $addNewData = UserTargets::updateOrInsert($baseData, [
+            'user_id' => $user_id,
+            'month' => $month,
+            'year' => $year,
+            'target_type' => 'insurance',
+            'count' => $newAccount
+        ]);
+
+    }
+    
+    public function saveMarginCount($user, $month, $year) {
+
+        $leadAdded = Lead::where(function($q) use($month, $year, $user) {
+            $q->whereMonth('created_at', $month);
+            $q->whereYear('created_at', $year);
+            $q->where('lead_owner', $user->id);
+            $q->where('account_category', 'margin');
+            $q->whereNull('third_party');
+        })->get();
+
+        $newAccount = $leadAdded->count();
+
+        $baseData = [
+            'user_id' => $user_id,
+            'month' => $month,
+            'year' => $year,
+            'target_type' => 'margin',
+        ];
+
+        $addNewData = UserTargets::updateOrInsert($baseData, [
+            'user_id' => $user_id,
+            'month' => $month,
+            'year' => $year,
+            'target_type' => 'margin',
+            'count' => $newAccount
+        ]);
+
+    }
+    
+    public function saveThirdPartyCount($user, $month, $year) {
+    
+        $leadAdded = Lead::where(function($q) use($month, $year, $user) {
+            $q->whereMonth('created_at', $month);
+            $q->whereYear('created_at', $year);
+            $q->where('lead_owner', $user->id);
+            $q->whereNotNull('third_party');
+        })->get();
+
+        $newAccount = $leadAdded->count();
+
+        $baseData = [
+            'user_id' => $user_id,
+            'month' => $month,
+            'year' => $year,
+            'target_type' => 'third_party',
+        ];
+
+        $addNewData = UserTargets::updateOrInsert($baseData, [
+            'user_id' => $user_id,
+            'month' => $month,
+            'year' => $year,
+            'target_type' => 'third_party',
+            'count' => $newAccount
+        ]);        
+
+    }
+    
 
 }
