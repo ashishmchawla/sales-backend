@@ -14,7 +14,7 @@ class StatsController extends Controller
 
     public function storeStats($month, $year) {
 
-        $users = User::where('user_target_type', 'user')->get();
+        $users = User::where('user_type', 'user')->get();
        
         foreach($users as $user) {
             self::saveNewCount($user, $month, $year);
@@ -192,14 +192,14 @@ class StatsController extends Controller
         $newLeadsAdded = $leadAdded->count();
 
         $baseData = [
-            'user_id' => $user_id,
+            'user_id' => $user->id,
             'month' => $month,
             'year' => $year,
             'target_type' => 'new',
         ];
 
         $addNewData = UserTargets::updateOrInsert($baseData, [
-            'user_id' => $user_id,
+            'user_id' => $user->id,
             'month' => $month,
             'year' => $year,
             'target_type' => 'new',
@@ -219,14 +219,14 @@ class StatsController extends Controller
         $existingLeads = $leadAdded->count();
 
         $baseData = [
-            'user_id' => $user_id,
+            'user_id' => $user->id,
             'month' => $month,
             'year' => $year,
             'target_type' => 'existing',
         ];
 
         $addExistingData = UserTargets::updateOrInsert($baseData, [
-            'user_id' => $user_id,
+            'user_id' => $user->id,
             'month' => $month,
             'year' => $year,
             'target_type' => 'existing',
@@ -247,14 +247,14 @@ class StatsController extends Controller
         $newAccount = $leadAdded->count();
 
         $baseData = [
-            'user_id' => $user_id,
+            'user_id' => $user->id,
             'month' => $month,
             'year' => $year,
             'target_type' => 'account',
         ];
 
         $addNewData = UserTargets::updateOrInsert($baseData, [
-            'user_id' => $user_id,
+            'user_id' => $user->id,
             'month' => $month,
             'year' => $year,
             'target_type' => 'account',
@@ -276,14 +276,14 @@ class StatsController extends Controller
         $newAccount = $leadAdded->count();
 
         $baseData = [
-            'user_id' => $user_id,
+            'user_id' => $user->id,
             'month' => $month,
             'year' => $year,
             'target_type' => 'mutual_funds',
         ];
 
         $addNewData = UserTargets::updateOrInsert($baseData, [
-            'user_id' => $user_id,
+            'user_id' => $user->id,
             'month' => $month,
             'year' => $year,
             'target_type' => 'mutual_funds',
@@ -305,14 +305,14 @@ class StatsController extends Controller
         $newAccount = $leadAdded->count();
 
         $baseData = [
-            'user_id' => $user_id,
+            'user_id' => $user->id,
             'month' => $month,
             'year' => $year,
             'target_type' => 'insurance',
         ];
 
         $addNewData = UserTargets::updateOrInsert($baseData, [
-            'user_id' => $user_id,
+            'user_id' => $user->id,
             'month' => $month,
             'year' => $year,
             'target_type' => 'insurance',
@@ -334,14 +334,14 @@ class StatsController extends Controller
         $newAccount = $leadAdded->count();
 
         $baseData = [
-            'user_id' => $user_id,
+            'user_id' => $user->id,
             'month' => $month,
             'year' => $year,
             'target_type' => 'margin',
         ];
 
         $addNewData = UserTargets::updateOrInsert($baseData, [
-            'user_id' => $user_id,
+            'user_id' => $user->id,
             'month' => $month,
             'year' => $year,
             'target_type' => 'margin',
@@ -362,14 +362,14 @@ class StatsController extends Controller
         $newAccount = $leadAdded->count();
 
         $baseData = [
-            'user_id' => $user_id,
+            'user_id' => $user->id,
             'month' => $month,
             'year' => $year,
             'target_type' => 'third_party',
         ];
 
         $addNewData = UserTargets::updateOrInsert($baseData, [
-            'user_id' => $user_id,
+            'user_id' => $user->id,
             'month' => $month,
             'year' => $year,
             'target_type' => 'third_party',
