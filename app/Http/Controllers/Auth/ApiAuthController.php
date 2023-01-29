@@ -107,4 +107,8 @@ class ApiAuthController extends Controller
         ]);
     
     }
+
+    public function tokenLogin () {
+        return Auth::user(); 
+    }
 }
