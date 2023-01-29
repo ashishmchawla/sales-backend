@@ -449,4 +449,114 @@ class StatsController extends Controller
 
     }
 
+    public function allServicesGraph() {
+
+        $month = date('n');
+        $year = date('Y');
+        $targets = UserTargets::where('month', $month)
+            ->where('year', $year)
+            ->get();
+
+        $data = [];
+        
+        $new = 0;
+        $newTargets = 0; 
+        $existing = 0; 
+        $existingTargets = 0; 
+        $account = 0; 
+        $accountTargets = 0; 
+        $margin = 0; 
+        $marginTargets = 0;
+        $mututal_funds = 0; 
+        $mututal_fundsTargets = 0; 
+        $insurance = 0;
+        $insuranceTargets = 0; 
+        $third_party = 0; 
+        $third_partyTargets = 0; 
+
+        foreach( $targets as $target ) {
+
+            if( $target->target_type == 'new' ) {
+                $new += $target->count;
+                $newTargets += $target->targets;
+            }
+
+            if( $target->target_type == 'existing' ) {
+                $existing += $target->count;
+                $existingTargets += $target->targets;
+            }
+
+            if( $target->target_type == 'account' ) {
+                $account += $target->count;
+                $accountTargets += $target->targets;
+            }
+
+            if( $target->target_type == 'margin' ) {
+                $margin += $target->count;
+                $marginTargets += $target->targets;
+            }
+
+            if( $target->target_type == 'mututal_funds' ) {
+                $mututal_funds += $target->count;
+                $mututal_fundsTargets += $target->targets;
+            }
+
+            if( $target->target_type == 'insurance' ) {
+                $insurance += $target->count;
+                $insuranceTargets += $target->targets;
+            }
+
+            if( $target->target_type == 'third_party' ) {
+                $third_party += $target->count;
+                $third_partyTargets += $target->targets;
+            }
+
+        } 
+
+        $titleArray = ['Type of Services', 'Actuals', 'Targets'];
+        array_push( $data, $titleArray );
+        
+        $newArray = ['New Leads'];
+        array_push( $newArray, $new );
+        array_push( $newArray, $newTargets );
+        array_push( $data, $newArray );
+
+        $existingArray = ['Existing Leads'];
+        array_push( $existingArray, $existing );
+        array_push( $existingArray, $existingTargets );
+        array_push( $data, $existingArray );
+        
+        $accountArray = ['Account'];
+        array_push( $accountArray, $account );
+        array_push( $accountArray, $accountTargets );
+        array_push( $data, $accountArray );
+
+        $marginArray = ['Margin'];
+        array_push( $marginArray, $margin );
+        array_push( $marginArray, $marginTargets );
+        array_push( $data, $marginArray );
+
+        $mututalArray = ['Mutual Funds'];
+        array_push( $mututalArray, $mututal_funds );
+        array_push( $mututalArray, $mututal_fundsTargets );
+        array_push( $data, $mututalArray );
+
+        $insuranceArray = ['Insurance'];
+        array_push( $insuranceArray, $insurance );
+        array_push( $insuranceArray, $insuranceTargets );
+        array_push( $data, $insuranceArray );
+
+        $thirdArray = ['Third Party'];
+        array_push( $thirdArray, $third_party );
+        array_push( $thirdArray, $third_partyTargets );
+        array_push( $data, $thirdArray );
+
+        return response([
+            'status' => 1, 
+            'graphData' => $data,
+            'month' => date('M')
+        ]);
+
+    }
+
 }
