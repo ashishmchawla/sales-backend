@@ -50,6 +50,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     // Dashboard APIs
 	Route::get('tokenLogin', 'Auth\ApiAuthController@tokenLogin');
     Route::get('allServicesGraph', 'StatsController@allServicesGraph');
+    Route::get('getStatsByType/{type}', 'StatsController@getStatsByType');
 
     // Users
     Route::get('/allUsers', 'EmployeeController@allUsers');

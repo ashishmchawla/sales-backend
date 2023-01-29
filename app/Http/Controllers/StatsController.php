@@ -559,4 +559,33 @@ class StatsController extends Controller
 
     }
 
+    public function getStatsByType($type) {
+
+        $month = date('n');
+        $year = date('Y');
+        $targets = UserTargets::join('users', 'users.id', '=', 'user_targets.user_id')
+            ->where('month', $month)
+            ->where('year', $year)
+            ->where('target_type', $type)
+            ->get();
+
+        $data = [];
+        $dataPartZero = ['Employee', 'Actuals'];
+        array_push( $data, $dataPartZero );
+
+        foreach($targets as $target) {
+            $username = $target->first_name.' '.$target->last_name;
+            $dataPart = [];
+            array_push($dataPart, $username);
+            array_push($dataPart, $target->count);
+            array_push($data, $dataPart);
+        }
+
+        return response([
+            'status' => 1, 
+            'graphData' => $data
+        ]);
+        
+    }
+
 }
