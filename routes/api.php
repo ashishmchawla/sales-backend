@@ -44,6 +44,9 @@ Route::group(['middleware' => 'auth:api'], function () {
 	Route::post('/registerUserDevice', 'PushNotificationController@registerUserDevice');
 	Route::post('/sendNotification', 'PushNotificationController@sendPushNotification');
 
+    // App Stats
+    Route::get('/appStats/{user_id}', 'StatsController@getUserStats');
+
     // Dashboard APIs
     // Users
     Route::get('/allUsers', 'EmployeeController@allUsers');

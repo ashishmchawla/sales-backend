@@ -378,5 +378,75 @@ class StatsController extends Controller
 
     }
     
+    public function getUserStats($user_id) {
+
+        $month = date('n');
+        $year = date('Y');
+        $targets = UserTargets::where('user_id', $user_id)
+            ->where('month', $month)
+            ->where('year', $year)
+            ->get();
+
+        $data = [
+            'new' => [],
+            'existing' => [], 
+            'account' => [],
+            'margin' => [],
+            'mutual_funds' => [],
+            'insurance' => [],
+            'third_party' => []
+        ]; 
+
+        $counts = [
+            'target' => 0,
+            'achieved' => 0, 
+            'follow_ups' => 0,
+            'fulfilled' => 0
+        ];
+
+        foreach( $targets as $target ) {
+            if( $target->target_type == 'new' && $target->targets != null ) {
+                array_push( $data['new'], $target->count);
+                array_push( $data['new'], $target->targets);
+                $counts['target'] = $target->targets;
+                $counts['achieved'] = $target->count;
+                $counts['fulfilled'] = round( ($target->count / $target->targets) * 100, 2 );
+            }
+            if( $target->target_type == 'existing' && $target->targets != null ) {
+                array_push( $data['existing'], $target->count);
+                array_push( $data['existing'], $target->targets);
+                $counts['follow_ups'] = $target->count;
+            }
+            if( $target->target_type == 'account' && $target->targets != null ) {
+                array_push( $data['account'], $target->count);
+                array_push( $data['account'], $target->targets);
+            }
+            if( $target->target_type == 'margin' && $target->targets != null ) {
+                array_push( $data['margin'], $target->count);
+                array_push( $data['margin'], $target->targets);
+            }
+            if( $target->target_type == 'mutual_funds' && $target->targets != null ) {
+                array_push( $data['mutual_funds'], $target->count);
+                array_push( $data['mutual_funds'], $target->targets);
+            }
+            if( $target->target_type == 'insurance' && $target->targets != null ) {
+                array_push( $data['insurance'], $target->count);
+                array_push( $data['insurance'], $target->targets);
+            }
+            if( $target->target_type == 'third_party' && $target->targets != null ) {
+                array_push( $data['third_party'], $target->count);
+                array_push( $data['third_party'], $target->targets);
+            }
+        }
+        
+
+        return response([
+            'status' => 1, 
+            'graph_stats' => $data, 
+            'counts' => $counts,
+            'message' => 'Stats loaded successfully',
+        ]);
+
+    }
 
 }
