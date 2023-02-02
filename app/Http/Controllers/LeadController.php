@@ -28,14 +28,14 @@ class LeadController extends Controller
         if( $lead ) {
             $leadOwner = User::find($request->lead_owner);
             $activityData = [
-                'lead_id' => $lead->lead_id,
+                'lead_id' => $lead->id,
                 'activity_log' => 'New lead added by '.$leadOwner->first_name.' '.$leadOwner->last_name,
                 'activity_type' => 'note',
                 'remind_at' => null,
                 'is_event_complete' => 1,
                 'logged_by' => $request->lead_owner,
             ];
-            $activity = LeadActivity::create($data);
+            $activity = LeadActivity::create($activityData);
         }
 
         return response(['status' => 1, 'lead' => $lead, 'message' => 'Lead added successfully']);
@@ -60,6 +60,16 @@ class LeadController extends Controller
             $lead->stock_margin = $request->stock_margin;
         }
         if( $lead->save() ) {
+            $leadOwner = User::find($request->lead_owner);
+            $activityData = [
+                'lead_id' => $lead->id,
+                'activity_log' => 'Lead updated by '.$leadOwner->first_name.' '.$leadOwner->last_name,
+                'activity_type' => 'note',
+                'remind_at' => null,
+                'is_event_complete' => 1,
+                'logged_by' => $request->lead_owner,
+            ];
+            $activity = LeadActivity::create($activityData);
             return response(['lead' => $lead, 'status' => 1, 'message' => 'Lead updated successfully']);
         }
         else {
