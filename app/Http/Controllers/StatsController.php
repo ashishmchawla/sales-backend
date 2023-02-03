@@ -269,8 +269,7 @@ class StatsController extends Controller
             $q->whereMonth('created_at', $month);
             $q->whereYear('created_at', $year);
             $q->where('lead_owner', $user->id);
-            $q->where('account_category', 'mutual_funds');
-            $q->whereNull('third_party');
+            $q->where('account_category', 'like', '%mutual_funds%');
         })->get();
 
         $newAccount = $leadAdded->count();
@@ -298,8 +297,7 @@ class StatsController extends Controller
             $q->whereMonth('created_at', $month);
             $q->whereYear('created_at', $year);
             $q->where('lead_owner', $user->id);
-            $q->where('account_category', 'insurance');
-            $q->whereNull('third_party');
+            $q->where('account_category', 'like', '%insurance%');
         })->get();
 
         $newAccount = $leadAdded->count();
@@ -327,8 +325,7 @@ class StatsController extends Controller
             $q->whereMonth('created_at', $month);
             $q->whereYear('created_at', $year);
             $q->where('lead_owner', $user->id);
-            $q->where('account_category', 'margin');
-            $q->whereNull('third_party');
+            $q->where('account_category', 'like', '%margin%');
         })->get();
 
         $newAccount = $leadAdded->count();
@@ -356,7 +353,7 @@ class StatsController extends Controller
             $q->whereMonth('created_at', $month);
             $q->whereYear('created_at', $year);
             $q->where('lead_owner', $user->id);
-            $q->whereNotNull('third_party');
+            $q->where('account_category', 'like', '%option_brains%');
         })->get();
 
         $newAccount = $leadAdded->count();
@@ -394,7 +391,7 @@ class StatsController extends Controller
             'margin' => [],
             'mutual_funds' => [],
             'insurance' => [],
-            'third_party' => []
+            'option_brains' => []
         ]; 
 
         $counts = [
@@ -433,9 +430,9 @@ class StatsController extends Controller
                 array_push( $data['insurance'], $target->count);
                 array_push( $data['insurance'], $target->targets);
             }
-            if( $target->target_type == 'third_party' && $target->targets != null ) {
-                array_push( $data['third_party'], $target->count);
-                array_push( $data['third_party'], $target->targets);
+            if( $target->target_type == 'option_brains' && $target->targets != null ) {
+                array_push( $data['option_brains'], $target->count);
+                array_push( $data['option_brains'], $target->targets);
             }
         }
         
@@ -465,14 +462,6 @@ class StatsController extends Controller
         $existingTargets = 0; 
         $account = 0; 
         $accountTargets = 0; 
-        $margin = 0; 
-        $marginTargets = 0;
-        $mututal_funds = 0; 
-        $mututal_fundsTargets = 0; 
-        $insurance = 0;
-        $insuranceTargets = 0; 
-        $third_party = 0; 
-        $third_partyTargets = 0; 
 
         foreach( $targets as $target ) {
 
@@ -490,6 +479,55 @@ class StatsController extends Controller
                 $account += $target->count;
                 $accountTargets += $target->targets;
             }
+
+        } 
+
+        $titleArray = ['Type of Services', 'Actuals', 'Targets'];
+        array_push( $data, $titleArray );
+        
+        $newArray = ['New Leads'];
+        array_push( $newArray, $new );
+        array_push( $newArray, $newTargets );
+        array_push( $data, $newArray );
+
+        $existingArray = ['Existing Leads'];
+        array_push( $existingArray, $existing );
+        array_push( $existingArray, $existingTargets );
+        array_push( $data, $existingArray );
+        
+        $accountArray = ['Account'];
+        array_push( $accountArray, $account );
+        array_push( $accountArray, $accountTargets );
+        array_push( $data, $accountArray );
+
+        return response([
+            'status' => 1, 
+            'graphData' => $data,
+            'month' => date('M')
+        ]);
+
+    }
+
+    public function allServicesGraphNumbers() {
+
+        $month = date('n');
+        $year = date('Y');
+        $targets = UserTargets::where('month', $month)
+            ->where('year', $year)
+            ->get();
+
+        $data = [];
+        
+        $margin = 0; 
+        $marginTargets = 0;
+        $mututal_funds = 0; 
+        $mututal_fundsTargets = 0; 
+        $insurance = 0;
+        $insuranceTargets = 0; 
+        $third_party = 0; 
+        $third_partyTargets = 0; 
+
+        foreach( $targets as $target ) {
 
             if( $target->target_type == 'margin' ) {
                 $margin += $target->count;
@@ -516,21 +554,6 @@ class StatsController extends Controller
         $titleArray = ['Type of Services', 'Actuals', 'Targets'];
         array_push( $data, $titleArray );
         
-        $newArray = ['New Leads'];
-        array_push( $newArray, $new );
-        array_push( $newArray, $newTargets );
-        array_push( $data, $newArray );
-
-        $existingArray = ['Existing Leads'];
-        array_push( $existingArray, $existing );
-        array_push( $existingArray, $existingTargets );
-        array_push( $data, $existingArray );
-        
-        $accountArray = ['Account'];
-        array_push( $accountArray, $account );
-        array_push( $accountArray, $accountTargets );
-        array_push( $data, $accountArray );
-
         $marginArray = ['Margin'];
         array_push( $marginArray, $margin );
         array_push( $marginArray, $marginTargets );
