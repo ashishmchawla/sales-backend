@@ -272,7 +272,10 @@ class StatsController extends Controller
             $q->where('account_category', 'like', '%mutual_funds%');
         })->get();
 
-        $newAccount = $leadAdded->count();
+        $newAccount = 0; 
+        foreach( $leadAdded as $la ){ 
+            $newAccount = $newAccount + $la->mfValue;
+        }
 
         $baseData = [
             'user_id' => $user->id,
@@ -300,7 +303,11 @@ class StatsController extends Controller
             $q->where('account_category', 'like', '%insurance%');
         })->get();
 
-        $newAccount = $leadAdded->count();
+        $newAccount = 0; 
+        foreach( $leadAdded as $la ){ 
+            $newAccount = $newAccount + $la->insuranceValue;
+        }
+
 
         $baseData = [
             'user_id' => $user->id,
@@ -328,7 +335,10 @@ class StatsController extends Controller
             $q->where('account_category', 'like', '%margin%');
         })->get();
 
-        $newAccount = $leadAdded->count();
+        $newAccount = 0; 
+        foreach( $leadAdded as $la ){ 
+            $newAccount = $newAccount + $la->marginValue;
+        }
 
         $baseData = [
             'user_id' => $user->id,
@@ -356,20 +366,23 @@ class StatsController extends Controller
             $q->where('account_category', 'like', '%option_brains%');
         })->get();
 
-        $newAccount = $leadAdded->count();
+        $newAccount = 0; 
+        foreach( $leadAdded as $la ){ 
+            $newAccount = $newAccount + $la->optValue;
+        }
 
         $baseData = [
             'user_id' => $user->id,
             'month' => $month,
             'year' => $year,
-            'target_type' => 'third_party',
+            'target_type' => 'option_brains',
         ];
 
         $addNewData = UserTargets::updateOrInsert($baseData, [
             'user_id' => $user->id,
             'month' => $month,
             'year' => $year,
-            'target_type' => 'third_party',
+            'target_type' => 'option_brains',
             'count' => $newAccount
         ]);        
 

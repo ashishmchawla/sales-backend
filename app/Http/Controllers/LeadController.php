@@ -19,7 +19,10 @@ class LeadController extends Controller
             'location' => $request->location,
             'account_category' => $request->account_category,
             'account_code' => $request->account_code,
-            'third_party' => $request->third_party,
+            'marginValue' => $request->marginValue,
+            'mfValue' => $request->mfValue,
+            'insuranceValue' => $request->insuranceValue,
+            'optValue' => $request->optValue,
             'lead_owner' => $request->lead_owner,
         ];
 
@@ -54,11 +57,12 @@ class LeadController extends Controller
         $lead->location = $request->location;
         $lead->account_category = $request->account_category;
         $lead->account_code = $request->account_code;
-        $lead->third_party = $request->third_party;
         $lead->lead_status = $request->lead_status;
-        if( $request->stock_margin != null ) {
-            $lead->stock_margin = $request->stock_margin;
-        }
+        $lead->marginValue = $request->marginValue;
+        $lead->mfValue = $request->mfValue;
+        $lead->insuranceValue = $request->insuranceValue;
+        $lead->optValue = $request->optValue;
+
         if( $lead->save() ) {
             $leadOwner = User::find($request->lead_owner);
             $activityData = [
