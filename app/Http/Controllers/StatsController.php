@@ -136,14 +136,14 @@ class StatsController extends Controller
                 'user_id' => $user_id,
                 'month' => $month,
                 'year' => $year,
-                'target_type' => 'third_party',
+                'target_type' => 'option_brains',
                 'targets' => $third_party
             ];
             $addThirdPartyData = UserTargets::updateOrInsert([
                 'user_id' => $user_id,
                 'month' => $month,
                 'year' => $year,
-                'target_type' => 'third_party'
+                'target_type' => 'option_brains'
             ], $third_partyData);
         }
 
