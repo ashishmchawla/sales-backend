@@ -8,6 +8,7 @@ use App\Models\UserTargets;
 use App\Models\User;
 use App\Models\Lead;
 use App\Models\LeadActivity;
+use App\Models\LeadAmount;
 
 class StatsController extends Controller
 {
@@ -265,11 +266,10 @@ class StatsController extends Controller
     
     public function saveMFCount($user, $month, $year) {
 
-        $leadAdded = Lead::where(function($q) use($month, $year, $user) {
+        $leadAdded = LeadAmount::where(function($q) use($month, $year, $user) {
             $q->whereMonth('created_at', $month);
             $q->whereYear('created_at', $year);
-            $q->where('lead_owner', $user->id);
-            $q->where('account_category', 'like', '%mutual_funds%');
+            $q->where('lead_id', $user->id);
         })->get();
 
         $newAccount = 0; 
@@ -296,11 +296,10 @@ class StatsController extends Controller
 
     public function saveInsuranceCount($user, $month, $year) {
 
-        $leadAdded = Lead::where(function($q) use($month, $year, $user) {
+        $leadAdded = LeadAmount::where(function($q) use($month, $year, $user) {
             $q->whereMonth('created_at', $month);
             $q->whereYear('created_at', $year);
-            $q->where('lead_owner', $user->id);
-            $q->where('account_category', 'like', '%insurance%');
+            $q->where('lead_id', $user->id);
         })->get();
 
         $newAccount = 0; 
@@ -328,11 +327,10 @@ class StatsController extends Controller
     
     public function saveMarginCount($user, $month, $year) {
 
-        $leadAdded = Lead::where(function($q) use($month, $year, $user) {
+        $leadAdded = LeadAmount::where(function($q) use($month, $year, $user) {
             $q->whereMonth('created_at', $month);
             $q->whereYear('created_at', $year);
-            $q->where('lead_owner', $user->id);
-            $q->where('account_category', 'like', '%margin%');
+            $q->where('lead_id', $user->id);
         })->get();
 
         $newAccount = 0; 
@@ -359,12 +357,12 @@ class StatsController extends Controller
     
     public function saveThirdPartyCount($user, $month, $year) {
     
-        $leadAdded = Lead::where(function($q) use($month, $year, $user) {
+        $leadAdded = LeadAmount::where(function($q) use($month, $year, $user) {
             $q->whereMonth('created_at', $month);
             $q->whereYear('created_at', $year);
-            $q->where('lead_owner', $user->id);
-            $q->where('account_category', 'like', '%option_brains%');
+            $q->where('lead_id', $user->id);
         })->get();
+
 
         $newAccount = 0; 
         foreach( $leadAdded as $la ){ 

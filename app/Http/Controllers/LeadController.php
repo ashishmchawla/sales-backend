@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Lead;
 use App\Models\LeadActivity;
 use App\Models\User;
+use App\Models\LeadAmount;
 use Auth;
 
 class LeadController extends Controller
@@ -19,16 +20,25 @@ class LeadController extends Controller
             'location' => $request->location,
             'account_category' => $request->account_category,
             'account_code' => $request->account_code,
-            'marginValue' => $request->marginValue,
-            'mfValue' => $request->mfValue,
-            'insuranceValue' => $request->insuranceValue,
-            'optValue' => $request->optValue,
             'lead_owner' => $request->lead_owner,
         ];
 
         $lead = Lead::create($data);
 
         if( $lead ) {
+
+            $leadAmounts = [
+                'lead_id' => $lead->id,
+                'month' => date('n'),
+                'year' => date('Y'),
+                'marginValue' => $request->marginValue,
+                'mfValue' => $request->mfValue,
+                'insuranceValue' => $request->insuranceValue,
+                'optValue' => $request->optValue
+            ];
+
+            $leadAmount = LeadAmount::create($leadAmounts);
+
             $leadOwner = User::find($request->lead_owner);
             $activityData = [
                 'lead_id' => $lead->id,
@@ -58,10 +68,10 @@ class LeadController extends Controller
         $lead->account_category = $request->account_category;
         $lead->account_code = $request->account_code;
         $lead->lead_status = $request->lead_status;
-        $lead->marginValue = $request->marginValue;
-        $lead->mfValue = $request->mfValue;
-        $lead->insuranceValue = $request->insuranceValue;
-        $lead->optValue = $request->optValue;
+        // $lead->marginValue = $request->marginValue;
+        // $lead->mfValue = $request->mfValue;
+        // $lead->insuranceValue = $request->insuranceValue;
+        // $lead->optValue = $request->optValue;
 
         if( $lead->save() ) {
             $leadOwner = User::find($request->lead_owner);
