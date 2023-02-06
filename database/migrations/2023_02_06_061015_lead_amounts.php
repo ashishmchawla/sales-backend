@@ -22,6 +22,7 @@ class LeadAmounts extends Migration
             $table->integer('mfValue')->default('0');
             $table->integer('insuranceValue')->default('0');
             $table->integer('optValue')->default('0');
+            $table->foreignUuid('lead_owner');
             $table->timestamps();
         });
     }

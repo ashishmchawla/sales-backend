@@ -34,7 +34,8 @@ class LeadController extends Controller
                 'marginValue' => $request->marginValue,
                 'mfValue' => $request->mfValue,
                 'insuranceValue' => $request->insuranceValue,
-                'optValue' => $request->optValue
+                'optValue' => $request->optValue,
+                'lead_owner' => $request->lead_owner
             ];
 
             $leadAmount = LeadAmount::create($leadAmounts);
@@ -129,11 +130,13 @@ class LeadController extends Controller
     public function getLeadDetails($lead_id) {
 
         $lead = Lead::where('id', $lead_id)->with('activities')->first();
+        $leadAmounts = LeadAmount::where('lead_id', $lead_id)->orderBy('created_at', 'asc')->get();
 
         if ($lead) {
             return response([
                 'status' => 1,
                 'details' => $lead,
+                'amounts' => $leadAmounts,
                 'message' => 'Lead details fetched'
             ]);
         }
@@ -153,11 +156,14 @@ class LeadController extends Controller
         ->selectRaw('leads.*, users.first_name as owner_first_name, users.last_name as owner_last_name')
         ->orderBy('leads.created_at', 'desc')
         ->first();
+        
+        $leadAmounts = LeadAmount::where('lead_id', $lead_id)->orderBy('created_at', 'asc')->get();
 
         if ($lead) {
             return response([
                 'status' => 1,
                 'details' => $lead,
+                'amounts' => $leadAmounts,
                 'message' => 'Lead details fetched'
             ]);
         }
@@ -214,6 +220,61 @@ class LeadController extends Controller
                 'error_message' => 'Something went wrong, try again'
             ]);
         }
+
+    }
+
+    public function addNumbers(Request $request) { 
+
+        $leadAmounts = [
+            'lead_id' => $request->lead_id,
+            'month' => date('n'),
+            'year' => date('Y'),
+            'marginValue' => $request->marginValue,
+            'mfValue' => $request->mfValue,
+            'insuranceValue' => $request->insuranceValue,
+            'optValue' => $request->optValue,
+            'lead_owner' => $request->lead_owner
+        ];
+
+        $leadAmount = LeadAmount::create($leadAmounts);
+        $leadOwner = User::find($request->lead_owner);
+        $lead = Lead::find($request->lead_id);
+        $activityData = [
+            'lead_id' => $request->lead_id,
+            'activity_log' => 'Added a new entry for '.$lead->first_name.' '.$lead->last_name.' by '.$leadOwner->first_name.' '.$leadOwner->last_name,
+            'activity_type' => 'note',
+            'remind_at' => null,
+            'is_event_complete' => 1,
+            'logged_by' => $request->lead_owner,
+        ];
+        $activity = LeadActivity::create($activityData);
+    }
+
+    public function editNumbers(Request $request) {
+
+        $leadAmounts = LeadAmount::find($request->lead_amount_id);
+     
+        $leadAmounts->lead_id = $request->lead_id;
+        $leadAmounts->month = date('n');
+        $leadAmounts->year = date('Y');
+        $leadAmounts->marginValue = $request->marginValue;
+        $leadAmounts->mfValue = $request->mfValue;
+        $leadAmounts->insuranceValue = $request->insuranceValue;
+        $leadAmounts->optValue = $request->optValue;
+        $leadAmounts->lead_owner = $request->lead_owner;
+
+        $leadAmounts->save();  
+        $lead = Lead::find($request->lead_id);
+        $activityData = [
+            'lead_id' => $request->lead_id,
+            'activity_log' => $leadOwner->first_name.' '.$leadOwner->last_name.' edited the entry for '.$lead->first_name.' '.$lead->last_name,
+            'activity_type' => 'note',
+            'remind_at' => null,
+            'is_event_complete' => 1,
+            'logged_by' => $request->lead_owner,
+        ];
+        $activity = LeadActivity::create($activityData);
+    
 
     }
 

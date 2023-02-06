@@ -34,6 +34,8 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::post('/leads/search', 'LeadController@searchLeadByName');
     Route::get('/leads/{lead_id}', 'LeadController@getLeadDetails');
     Route::get('/leads', 'LeadController@getLeads');
+    Route::post('/leads/amounts', 'LeadController@addNumbers');
+    Route::put('/leads/amounts', 'LeadController@editNumbers');
 
     // Lead Activity Routes
     Route::post('/lead_activity/create', 'LeadActivityController@createActivity');
