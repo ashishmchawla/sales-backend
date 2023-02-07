@@ -130,7 +130,11 @@ class LeadController extends Controller
     public function getLeadDetails($lead_id) {
 
         $lead = Lead::where('id', $lead_id)->with('activities')->first();
-        $leadAmounts = LeadAmount::where('lead_id', $lead_id)->orderBy('created_at', 'asc')->get();
+        $leadAmounts = LeadAmount::where('lead_id', $lead_id)
+            ->join('lead_amounts', 'lead_amounts.lead_owner', '=', 'users.id')
+            ->selectRaw('lead_amounts.*, users.first_name as owner_first_name, users.last_name as owner_last_name') 
+            ->orderBy('created_at', 'asc')
+            ->get();
 
         if ($lead) {
             return response([
@@ -152,12 +156,15 @@ class LeadController extends Controller
     public function getLeadDetailsForAdmin($lead_id) {
 
         $lead = Lead::where('leads.id', $lead_id)
-        ->join('users', 'leads.lead_owner', '=', 'users.id')
-        ->selectRaw('leads.*, users.first_name as owner_first_name, users.last_name as owner_last_name')
-        ->orderBy('leads.created_at', 'desc')
-        ->first();
+            ->join('users', 'leads.lead_owner', '=', 'users.id')
+            ->selectRaw('leads.*, users.first_name as owner_first_name, users.last_name as owner_last_name')
+            ->orderBy('leads.created_at', 'desc')
+            ->first();
         
-        $leadAmounts = LeadAmount::where('lead_id', $lead_id)->orderBy('created_at', 'asc')->get();
+        $leadAmounts = LeadAmount::where('lead_id', $lead_id)
+            ->join('lead_amounts', 'lead_amounts.lead_owner', '=', 'users.id')
+            ->selectRaw('lead_amounts.*, users.first_name as owner_first_name, users.last_name as owner_last_name') 
+            ->orderBy('created_at', 'asc')->get();
 
         if ($lead) {
             return response([
