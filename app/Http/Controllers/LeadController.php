@@ -130,7 +130,7 @@ class LeadController extends Controller
     public function getLeadDetails($lead_id) {
 
         $lead = Lead::where('id', $lead_id)->with('activities')->first();
-        $leadAmounts = LeadAmount::where('lead_id', $lead_id)->orderBy('created_at', 'asc')->get();
+        $leadAmounts = LeadAmount::where('lead_id', $lead_id)->orderBy('created_at', 'desc')->get();
 
         if ($lead) {
             return response([
