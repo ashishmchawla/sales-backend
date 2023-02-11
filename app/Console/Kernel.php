@@ -12,7 +12,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // $schedule->command('inspire')->hourly();
-        $schedule->command('emails:calculateStats')
+        $schedule->command('command:calculateStats')
         ->dailyAt('00:00')
         ->withoutOverlapping()
         ->appendOutputTo(storage_path('logs/scheduler.log'));
