@@ -131,7 +131,7 @@ class LeadController extends Controller
 
         $lead = Lead::where('id', $lead_id)->with('activities')->first();
         $leadAmounts = LeadAmount::where('lead_id', $lead_id)
-            ->join('lead_amounts', 'lead_amounts.lead_owner', '=', 'users.id')
+            ->join('users', 'lead_amounts.lead_owner', '=', 'users.id')
             ->selectRaw('lead_amounts.*, users.first_name as owner_first_name, users.last_name as owner_last_name') 
             ->orderBy('created_at', 'asc')
             ->get();
@@ -162,7 +162,7 @@ class LeadController extends Controller
             ->first();
         
         $leadAmounts = LeadAmount::where('lead_id', $lead_id)
-            ->join('lead_amounts', 'lead_amounts.lead_owner', '=', 'users.id')
+            ->join('users', 'lead_amounts.lead_owner', '=', 'users.id')
             ->selectRaw('lead_amounts.*, users.first_name as owner_first_name, users.last_name as owner_last_name') 
             ->orderBy('created_at', 'asc')->get();
 
