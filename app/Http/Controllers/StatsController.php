@@ -215,9 +215,16 @@ class StatsController extends Controller
             $q->whereMonth('updated_at', $month);
             $q->whereYear('updated_at', $year);
             $q->where('lead_owner', $user->id);
-        })->get();
+        })
+        ->with('activities')
+        ->get();
 
-        $existingLeads = $leadAdded->count();
+        $existingLeads = 0;
+        foreach( $leadAdded as $lead ) {
+            if( count($lead->activities) > 1 ) {
+                $existingLeads++;
+            }
+        }
 
         $baseData = [
             'user_id' => $user->id,
