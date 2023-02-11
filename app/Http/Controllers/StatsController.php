@@ -562,7 +562,7 @@ class StatsController extends Controller
                 $insuranceTargets += $target->targets;
             }
 
-            if( $target->target_type == 'third_party' ) {
+            if( $target->target_type == 'option_brains' ) {
                 $third_party += $target->count;
                 $third_partyTargets += $target->targets;
             }
@@ -587,7 +587,7 @@ class StatsController extends Controller
         array_push( $insuranceArray, $insuranceTargets );
         array_push( $data, $insuranceArray );
 
-        $thirdArray = ['Third Party'];
+        $thirdArray = ['Option Brains'];
         array_push( $thirdArray, $third_party );
         array_push( $thirdArray, $third_partyTargets );
         array_push( $data, $thirdArray );
