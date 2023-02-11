@@ -278,8 +278,9 @@ class LeadController extends Controller
         $leadAmounts->insuranceValue = $request->insuranceValue;
         $leadAmounts->optValue = $request->optValue;
         $leadAmounts->lead_owner = $request->lead_owner;
-
+        
         $leadAmounts->save();  
+        $leadOwner = User::find($request->lead_owner);
         $lead = Lead::find($request->lead_id);
         $activityData = [
             'lead_id' => $request->lead_id,
