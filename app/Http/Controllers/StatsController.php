@@ -269,7 +269,7 @@ class StatsController extends Controller
         $leadAdded = LeadAmount::where(function($q) use($month, $year, $user) {
             $q->whereMonth('created_at', $month);
             $q->whereYear('created_at', $year);
-            $q->where('lead_id', $user->id);
+            $q->where('lead_owner', $user->id);
         })->get();
 
         $newAccount = 0; 
@@ -299,7 +299,7 @@ class StatsController extends Controller
         $leadAdded = LeadAmount::where(function($q) use($month, $year, $user) {
             $q->whereMonth('created_at', $month);
             $q->whereYear('created_at', $year);
-            $q->where('lead_id', $user->id);
+            $q->where('lead_owner', $user->id);
         })->get();
 
         $newAccount = 0; 
@@ -330,7 +330,7 @@ class StatsController extends Controller
         $leadAdded = LeadAmount::where(function($q) use($month, $year, $user) {
             $q->whereMonth('created_at', $month);
             $q->whereYear('created_at', $year);
-            $q->where('lead_id', $user->id);
+            $q->where('lead_owner', $user->id);
         })->get();
 
         $newAccount = 0; 
@@ -360,7 +360,7 @@ class StatsController extends Controller
         $leadAdded = LeadAmount::where(function($q) use($month, $year, $user) {
             $q->whereMonth('created_at', $month);
             $q->whereYear('created_at', $year);
-            $q->where('lead_id', $user->id);
+            $q->where('lead_owner', $user->id);
         })->get();
 
 
