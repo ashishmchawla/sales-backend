@@ -68,7 +68,7 @@ class LeadController extends Controller
         $lead->location = $request->location;
         $lead->account_category = $request->account_category;
         $lead->account_code = $request->account_code;
-        $lead->lead_status = $request->lead_status;
+        $lead->lead_status = $request->lead_status == 'new' ? 'existing' : $request->lead_status;
         // $lead->marginValue = $request->marginValue;
         // $lead->mfValue = $request->mfValue;
         // $lead->insuranceValue = $request->insuranceValue;
@@ -130,17 +130,17 @@ class LeadController extends Controller
     public function getLeadDetails($lead_id) {
 
         $lead = Lead::where('id', $lead_id)->with('activities')->first();
-        // $leadAmounts = LeadAmount::where('lead_id', $lead_id)
-        //     ->join('lead_amounts', 'lead_amounts.lead_owner', '=', 'users.id')
-        //     ->selectRaw('lead_amounts.*, users.first_name as owner_first_name, users.last_name as owner_last_name') 
-        //     ->orderBy('created_at', 'asc')
-        //     ->get();
+        $leadAmounts = LeadAmount::where('lead_id', $lead_id)
+            ->join('lead_amounts', 'lead_amounts.lead_owner', '=', 'users.id')
+            ->selectRaw('lead_amounts.*, users.first_name as owner_first_name, users.last_name as owner_last_name') 
+            ->orderBy('created_at', 'asc')
+            ->get();
 
         if ($lead) {
             return response([
                 'status' => 1,
                 'details' => $lead,
-                // 'amounts' => $leadAmounts,
+                'amounts' => $leadAmounts,
                 'message' => 'Lead details fetched'
             ]);
         }
@@ -255,6 +255,15 @@ class LeadController extends Controller
             'logged_by' => $request->lead_owner,
         ];
         $activity = LeadActivity::create($activityData);
+
+        if( $lead->lead_status == 'new' ) {
+            $lead->lead_status = 'existing';
+            $lead->save();
+        }
+
+        return response(['lead' => $lead, 'status' => 1, 'message' => 'Lead updated successfully']);
+  
+
     }
 
     public function editNumbers(Request $request) {
@@ -282,7 +291,13 @@ class LeadController extends Controller
         ];
         $activity = LeadActivity::create($activityData);
     
+        if( $lead->lead_status == 'new' ) {
+            $lead->lead_status = 'existing';
+            $lead->save();
+        }
 
+        return response(['lead' => $lead, 'status' => 1, 'message' => 'Lead updated successfully']);
+  
     }
 
 }
