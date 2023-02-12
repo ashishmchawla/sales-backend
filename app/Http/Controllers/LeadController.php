@@ -117,7 +117,7 @@ class LeadController extends Controller
 
 		$user_id = Auth::user()->id;
 
-        $leads = Lead::where('lead_owner', $user_id)->get();
+        $leads = Lead::where('lead_owner', $user_id)->orderBy('created_at', 'desc')->get();
         if( $leads->count() > 0 ) {
             return response(['status' => 1, 'results' => $leads, 'message' => 'Leads found']);
         }
