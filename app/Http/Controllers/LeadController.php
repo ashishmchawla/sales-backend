@@ -71,14 +71,14 @@ class LeadController extends Controller
         $lead->lead_status = $request->lead_status == 'open' ? 'open' : $request->lead_status;
 
         if( $lead->save() ) {
-            $leadOwner = User::find($request->lead_owner);
+            $leadOwner = User::find($request->leadOwner);
             $activityData = [
                 'lead_id' => $lead->id,
                 'activity_log' => 'Lead updated by '.$leadOwner->first_name.' '.$leadOwner->last_name,
                 'activity_type' => 'note',
                 'remind_at' => null,
                 'is_event_complete' => 1,
-                'logged_by' => $request->lead_owner,
+                'logged_by' => $request->leadOwner,
             ];
             $activity = LeadActivity::create($activityData);
             return response(['lead' => $lead, 'status' => 1, 'message' => 'Lead updated successfully']);
