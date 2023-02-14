@@ -68,11 +68,7 @@ class LeadController extends Controller
         $lead->location = $request->location;
         $lead->account_category = $request->account_category;
         $lead->account_code = $request->account_code;
-        $lead->lead_status = $request->lead_status == 'new' ? 'existing' : $request->lead_status;
-        // $lead->marginValue = $request->marginValue;
-        // $lead->mfValue = $request->mfValue;
-        // $lead->insuranceValue = $request->insuranceValue;
-        // $lead->optValue = $request->optValue;
+        $lead->lead_status = $request->lead_status == 'open' ? 'open' : $request->lead_status;
 
         if( $lead->save() ) {
             $leadOwner = User::find($request->lead_owner);
@@ -256,11 +252,6 @@ class LeadController extends Controller
         ];
         $activity = LeadActivity::create($activityData);
 
-        if( $lead->lead_status == 'new' ) {
-            $lead->lead_status = 'existing';
-            $lead->save();
-        }
-
         return response(['lead' => $lead, 'status' => 1, 'message' => 'Lead updated successfully']);
   
 
@@ -291,11 +282,6 @@ class LeadController extends Controller
             'logged_by' => $request->lead_owner,
         ];
         $activity = LeadActivity::create($activityData);
-    
-        if( $lead->lead_status == 'new' ) {
-            $lead->lead_status = 'existing';
-            $lead->save();
-        }
 
         return response(['lead' => $lead, 'status' => 1, 'message' => 'Lead updated successfully']);
   
