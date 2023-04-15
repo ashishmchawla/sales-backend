@@ -167,10 +167,13 @@ class StatsController extends Controller
         $result['data']=[];
         
         foreach($userTargets as $target) {
+            $monthNum  = $target->month;
+            $dateObj   = DateTime::createFromFormat('!m', $monthNum);
+            $monthName = $dateObj->format('F'); 
             array_push(
                 $result['data'],
                 [
-                    date('F', strtotime($target->month)).' - '.$target->year,
+                    $monthName.' - '.$target->year,
                     ucfirst($target->target_type),
                     $target->count,
                     $target->targets
