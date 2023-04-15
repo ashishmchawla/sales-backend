@@ -193,7 +193,6 @@ class LeadController extends Controller
 			array_push($result['data'],[
 				$value->id,
 				$value->first_name. ' '.$value->last_name,
-				$value->email,
                 $value->contact,
                 $value->location,
                 $value->owner_first_name.' '.$value->owner_last_name,
