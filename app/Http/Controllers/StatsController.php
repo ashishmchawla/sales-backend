@@ -170,7 +170,7 @@ class StatsController extends Controller
             array_push(
                 $result['data'],
                 [
-                    date('M', strtotime($target->month)).' - '.$target->year,
+                    date('F', strtotime($target->month)).' - '.$target->year,
                     ucfirst($target->target_type),
                     $target->count,
                     $target->targets
