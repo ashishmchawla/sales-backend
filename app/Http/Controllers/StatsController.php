@@ -168,8 +168,7 @@ class StatsController extends Controller
         
         foreach($userTargets as $target) {
             $monthNum  = $target->month;
-            $dateObj   = DateTime::createFromFormat('!m', $monthNum);
-            $monthName = $dateObj->format('F'); 
+            $monthName =  date('F', mktime(0, 0, 0, $monthNum, 10));
             array_push(
                 $result['data'],
                 [
