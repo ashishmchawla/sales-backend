@@ -75,7 +75,7 @@ class ApiAuthController extends Controller
 
         } 
         else {
-            return response(['status' => 0, 'error_message' => 'Incorrect Details, please try again']);
+            return response(['status' => 0, 'error_message' => 'You are not an admin, only an admin is allowed to access this page.']);
         }
     }
  
