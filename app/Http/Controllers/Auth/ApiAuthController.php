@@ -51,6 +51,33 @@ class ApiAuthController extends Controller
         ]);
 
     }
+    
+    public function adminLogin(Request $request) 
+    {
+
+        $data = $request->validate([
+            'email' => 'email|required',
+            'password' => 'required'
+        ]);
+        
+        $checkIfAdmin = User::where('email', $request->email)->where('user_type', 'admin')->first();
+        if( !auth()->attempt($data) ) {
+            return response(['status' => 0, 'error_message' => 'Incorrect Details, please try again']);
+        }
+        if( $checkIfAdmin ) {
+            
+            $token = auth()->user()->createToken('TriventureToken')->accessToken;
+            return response([
+                'status' => 1, 
+                'user' => auth()->user(),
+                'token' => $token
+            ]);
+
+        } 
+        else {
+            return response(['status' => 0, 'error_message' => 'Incorrect Details, please try again']);
+        }
+    }
  
     // User Forgot Password
     public function forgotPassword(Request $request) {

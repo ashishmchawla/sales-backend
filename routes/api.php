@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/register', 'Auth\ApiAuthController@register');
 Route::post('/login', 'Auth\ApiAuthController@login');
+Route::post('/adminLogin', 'Auth\ApiAuthController@adminLogin');
 Route::post('/verifyEmail', 'Auth\ApiAuthController@verifyEmail');
 Route::get('/getUsers', 'Auth\ApiAuthController@getUsers');
 
