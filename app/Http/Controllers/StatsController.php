@@ -631,4 +631,13 @@ class StatsController extends Controller
         
     }
 
+    public function updateStats() {
+
+        $month = date('n');
+        $year = date('Y');
+ 
+        $storeStats = self::storeStats($month, $year);
+        
+    }
+
 }

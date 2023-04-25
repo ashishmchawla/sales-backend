@@ -67,4 +67,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get('/lead_details/{lead_id}', 'LeadController@getLeadDetailsForAdmin');
     Route::get('/lead_activities/{lead_id}', 'LeadController@getLeadActivities');
 
+    // Update stats
+    Route::get('/updateStats', 'StatsController@updateStats');
+
 });
