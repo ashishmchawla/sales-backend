@@ -187,7 +187,7 @@ class LeadController extends Controller
         ->get();
         
         $result['data']=[];
-        $timezone = 'UTC';
+        date_default_timezone_set('Asia/Kolkata');
 
         foreach ($leads as $value) {
         
@@ -198,7 +198,7 @@ class LeadController extends Controller
                 $value->location,
                 $value->owner_first_name.' '.$value->owner_last_name,
                 $value->lead_status,
-                date('d M Y h:i a', strtotime($value->created_at.' '.$timezone)) 
+                date('d M Y h:i a', strtotime($value->created_at)) 
 			]);   
         }
         return $result;
