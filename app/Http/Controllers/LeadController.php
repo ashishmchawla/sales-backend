@@ -187,7 +187,7 @@ class LeadController extends Controller
         ->get();
         
         $result['data']=[];
-        $timezone = 'Asia/Kolkata';
+        $timezone = 'UTC';
 
         foreach ($leads as $value) {
         
