@@ -465,7 +465,7 @@ class StatsController extends Controller
         else {
             $counts['target'] = $allTargets;
             $counts['achieved'] = $allCounts;
-            $counts['fulfilled'] = 0
+            $counts['fulfilled'] = 0;
         }
         
 
