@@ -399,6 +399,8 @@ class StatsController extends Controller
 
         $month = date('n');
         $year = date('Y');
+        $allTargets = 0; 
+        $allCounts = 0;
         $targets = UserTargets::where('user_id', $user_id)
             ->where('month', $month)
             ->where('year', $year)
@@ -425,9 +427,6 @@ class StatsController extends Controller
             if( $target->target_type == 'new' && $target->targets != null ) {
                 array_push( $data['new'], $target->count);
                 array_push( $data['new'], $target->targets);
-                $counts['target'] = $target->targets;
-                $counts['achieved'] = $target->count;
-                $counts['fulfilled'] = round( ($target->count / $target->targets) * 100, 2 );
             }
             if( $target->target_type == 'existing' && $target->targets != null ) {
                 array_push( $data['existing'], $target->count);
@@ -437,6 +436,8 @@ class StatsController extends Controller
             if( $target->target_type == 'account' && $target->targets != null ) {
                 array_push( $data['account'], $target->count);
                 array_push( $data['account'], $target->targets);
+                $allCounts = $allCounts + $target->count;
+                $allTargets = $allTargets + $target->targets;
             }
             if( $target->target_type == 'margin' && $target->targets != null ) {
                 array_push( $data['margin'], $target->count);
@@ -455,6 +456,10 @@ class StatsController extends Controller
                 array_push( $data['option_brains'], $target->targets);
             }
         }
+
+        $counts['target'] = $allTargets;
+        $counts['achieved'] = $allCounts;
+        $counts['fulfilled'] = round( ($allCounts / $allTargets) * 100, 2 );
         
 
         return response([

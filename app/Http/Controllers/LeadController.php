@@ -26,19 +26,19 @@ class LeadController extends Controller
         $lead = Lead::create($data);
 
         if( $lead ) {
-
-            $leadAmounts = [
-                'lead_id' => $lead->id,
-                'month' => date('n'),
-                'year' => date('Y'),
-                'marginValue' => $request->marginValue,
-                'mfValue' => $request->mfValue,
-                'insuranceValue' => $request->insuranceValue,
-                'optValue' => $request->optValue,
-                'lead_owner' => $request->lead_owner
-            ];
-
-            $leadAmount = LeadAmount::create($leadAmounts);
+            if($request->marginValue > 0 || $request->mfValue > 0 || $request->insuranceValue > 0 || $request->optValue > 0 ) { 
+                $leadAmounts = [
+                    'lead_id' => $lead->id,
+                    'month' => date('n'),
+                    'year' => date('Y'),
+                    'marginValue' => $request->marginValue,
+                    'mfValue' => $request->mfValue,
+                    'insuranceValue' => $request->insuranceValue,
+                    'optValue' => $request->optValue,
+                    'lead_owner' => $request->lead_owner
+                ];
+                $leadAmount = LeadAmount::create($leadAmounts);
+            }
 
             $leadOwner = User::find($request->lead_owner);
             $activityData = [
