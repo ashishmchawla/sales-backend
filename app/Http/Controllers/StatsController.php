@@ -457,9 +457,16 @@ class StatsController extends Controller
             }
         }
 
-        $counts['target'] = $allTargets;
-        $counts['achieved'] = $allCounts;
-        $counts['fulfilled'] = round( ($allCounts / $allTargets) * 100, 2 );
+        if($allTargets > 0 ){
+            $counts['target'] = $allTargets;
+            $counts['achieved'] = $allCounts;
+            $counts['fulfilled'] = round( ($allCounts / $allTargets) * 100, 2 );
+        } 
+        else {
+            $counts['target'] = $allTargets;
+            $counts['achieved'] = $allCounts;
+            $counts['fulfilled'] = 0
+        }
         
 
         return response([
