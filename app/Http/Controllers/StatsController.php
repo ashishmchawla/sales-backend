@@ -217,15 +217,13 @@ class StatsController extends Controller
             $q->whereMonth('updated_at', $month);
             $q->whereYear('updated_at', $year);
             $q->where('lead_owner', $user->id);
+            $q->where('existingCount','>', 0);
         })
-        ->with('activities')
         ->get();
 
         $existingLeads = 0;
         foreach( $leadAdded as $lead ) {
-            if( count($lead->activities) > 1 ) {
-                $existingLeads++;
-            }
+            $existingLeads = $existingLeads + $leadAdded->existingCount;
         }
 
         $baseData = [
@@ -650,6 +648,19 @@ class StatsController extends Controller
  
         $storeStats = self::storeStats($month, $year);
         
+    }
+
+    public function clearExistingCount() {
+        
+        $leads = Leads::where(function($q) {
+            $q->where('existingCount', '>', 0);
+        })->get();
+
+        foreach($leads as $lead) {
+            $lead->existingCount = 0;
+            $lead->save();
+        }
+
     }
 
 }

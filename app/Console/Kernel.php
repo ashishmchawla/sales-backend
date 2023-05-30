@@ -8,12 +8,25 @@ use App\Console\Commands\CalculateStats;
 
 class Kernel extends ConsoleKernel
 {
-    
+    protected $commands = [
+
+		// Recalculate Stats!
+		'App\Console\Commands\CalculateStats',
+
+        // Existing Count Clear
+        'App\Console\Commands\ClearExistingCount'
+
+    ];
+
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
         $schedule->command('command:calculateStats')
         ->dailyAt('00:00')
+        ->withoutOverlapping()
+        ->appendOutputTo(storage_path('logs/scheduler.log'));
+
+        $schedule->command('command:clearExistingCount')
+        ->monthly()
         ->withoutOverlapping()
         ->appendOutputTo(storage_path('logs/scheduler.log'));
     }

@@ -13,48 +13,69 @@ class LeadController extends Controller
 {
 
     public function createLead(Request $request) {
-        $data = [
-            'first_name' => $request->first_name,
-            'last_name' => $request->last_name,
-            'contact' => $request->contact,
-            'location' => $request->location,
-            'account_category' => $request->account_category,
-            'account_code' => $request->account_code,
-            'lead_owner' => $request->lead_owner,
-        ];
 
-        $lead = Lead::create($data);
+        $leadOwner = User::find($request->lead_owner);
+        $isLeadRepeated = self::checkLeadRepeat($request);
+        if( $isLeadRepeated['status'] === false ) {
+     
+            $data = [
+                'first_name' => $request->first_name,
+                'last_name' => $request->last_name,
+                'contact' => $request->contact,
+                'location' => $request->location,
+                'account_category' => $request->account_category,
+                'account_code' => $request->account_code,
+                'lead_owner' => $request->lead_owner,
+            ];
 
-        if( $lead ) {
-            if($request->marginValue > 0 || $request->mfValue > 0 || $request->insuranceValue > 0 || $request->optValue > 0 ) { 
-                $leadAmounts = [
+            $lead = Lead::create($data);
+
+            if( $lead ) {
+                if($request->marginValue > 0 || $request->mfValue > 0 || $request->insuranceValue > 0 || $request->optValue > 0 ) { 
+                    $leadAmounts = [
+                        'lead_id' => $lead->id,
+                        'month' => date('n'),
+                        'year' => date('Y'),
+                        'marginValue' => $request->marginValue,
+                        'mfValue' => $request->mfValue,
+                        'insuranceValue' => $request->insuranceValue,
+                        'optValue' => $request->optValue,
+                        'lead_owner' => $request->lead_owner
+                    ];
+                    $leadAmount = LeadAmount::create($leadAmounts);
+                }
+
+                $activityData = [
                     'lead_id' => $lead->id,
-                    'month' => date('n'),
-                    'year' => date('Y'),
-                    'marginValue' => $request->marginValue,
-                    'mfValue' => $request->mfValue,
-                    'insuranceValue' => $request->insuranceValue,
-                    'optValue' => $request->optValue,
-                    'lead_owner' => $request->lead_owner
+                    'activity_log' => 'New lead added by '.$leadOwner->first_name.' '.$leadOwner->last_name,
+                    'activity_type' => 'note',
+                    'remind_at' => null,
+                    'is_event_complete' => 1,
+                    'logged_by' => $request->lead_owner,
                 ];
-                $leadAmount = LeadAmount::create($leadAmounts);
+                $activity = LeadActivity::create($activityData);
             }
 
-            $leadOwner = User::find($request->lead_owner);
+            return response(['status' => 1, 'lead' => $lead, 'message' => 'Lead added successfully']);
+
+        }
+        else { 
+
+            $leadDetails = $isLeadRepeated['lead'];
+            $leadDetails->existingCount = $leadDetails->existingCount + 1; 
+            $leadDetails->save();
             $activityData = [
                 'lead_id' => $lead->id,
-                'activity_log' => 'New lead added by '.$leadOwner->first_name.' '.$leadOwner->last_name,
+                'activity_log' => 'Existing lead updated by '.$leadOwner->first_name.' '.$leadOwner->last_name,
                 'activity_type' => 'note',
                 'remind_at' => null,
                 'is_event_complete' => 1,
                 'logged_by' => $request->lead_owner,
             ];
             $activity = LeadActivity::create($activityData);
+            return response(['status' => 1, 'lead' => $leadDetails, 'message' => 'Lead added successfully']);
+
         }
-
-        return response(['status' => 1, 'lead' => $lead, 'message' => 'Lead added successfully']);
-
-
     }
 
     public function editLead(Request $request) {
@@ -285,6 +306,24 @@ class LeadController extends Controller
 
         return response(['lead' => $lead, 'status' => 1, 'message' => 'Lead updated successfully']);
   
+    }
+
+    public function checkLeadRepeat(Request $request) {
+        
+        $contact = $request->contact;
+        $leadDetails = Lead::where('contact', $contact)->first();
+        if( $leadDetails ) {
+            return [
+                'status' => true,
+                'lead' => $leadDetails
+            ];
+        }
+        else {
+            return [
+                'status' => false
+            ];
+        }
+
     }
 
 }
