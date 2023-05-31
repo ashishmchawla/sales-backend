@@ -459,11 +459,13 @@ class StatsController extends Controller
             $counts['target'] = $allTargets;
             $counts['achieved'] = $allCounts;
             $counts['fulfilled'] = round( ($allCounts / $allTargets) * 100, 2 );
+            $counts['pending'] = $allTargets - $allCounts;
         } 
         else {
             $counts['target'] = $allTargets;
             $counts['achieved'] = $allCounts;
             $counts['fulfilled'] = 0;
+            $counts['pending'] = 0; 
         }
         
 
