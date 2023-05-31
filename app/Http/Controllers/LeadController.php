@@ -65,7 +65,7 @@ class LeadController extends Controller
             $leadDetails->existingCount = $leadDetails->existingCount + 1; 
             $leadDetails->save();
             $activityData = [
-                'lead_id' => $lead->id,
+                'lead_id' => $leadDetails->id,
                 'activity_log' => 'Existing lead updated by '.$leadOwner->first_name.' '.$leadOwner->last_name,
                 'activity_type' => 'note',
                 'remind_at' => null,
