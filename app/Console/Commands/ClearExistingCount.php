@@ -5,7 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use App\Http\Controllers\StatsController;
 
-class CalculateStats extends Command
+class ClearExistingCount extends Command
 {
     /**
      * The name and signature of the console command.
