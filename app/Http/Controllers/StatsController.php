@@ -223,7 +223,7 @@ class StatsController extends Controller
 
         $existingLeads = 0;
         foreach( $leadAdded as $lead ) {
-            $existingLeads = $existingLeads + $leadAdded->existingCount;
+            $existingLeads = $existingLeads + $lead->existingCount;
         }
 
         $baseData = [
